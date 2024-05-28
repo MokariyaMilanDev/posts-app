@@ -1,5 +1,5 @@
 
-**# Project for improve my skills**
+**! Project for improve my skills**
 <br>
 
 # Full Stack App
@@ -10,9 +10,9 @@
 #### **Frontend :** HTML, CSS(Tailwind css), Javascript(React)
 #### **Backend :** Node.js, Express, mongoose
 #### **Database :** MongoDB
-#### **Other :** JWT, Bcrypt, cors, dotenv, nodemon
+#### **Other :** JWT, bcrypt, cors, dotenv, nodemon
 <br>
 
 ## Features
-#### **User Authentication :** Register
+#### **User Authentication :** Register, Login
 #### Other features are creating...

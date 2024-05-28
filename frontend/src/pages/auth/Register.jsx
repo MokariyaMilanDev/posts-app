@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { registerController } from "../../functions/register.controller";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Register() {
   const navigate = useNavigate();
@@ -107,7 +107,6 @@ function Register() {
     //// fetch "/auth/register" ////
     const registerResponse = await registerController(formData);
     if (!registerResponse.success) {
-
       if (registerResponse.errorCode === 0) {
         setErrorFields({
           ...errorFields,
@@ -169,6 +168,7 @@ function Register() {
   return (
     <div className="register-container flex justify-center items-center m-4">
       <div className="rounded w-[100%] md:w-[60%] grid sm:grid-cols-2 text-white bg-zinc-900 p-2">
+        {/* Heading */}
         <section className="auth-heading-section flex w-full p-4 h-full rounded-lg justify-center items-center">
           <div className="grid gap-4 p-4 rounded isolate bg-black/30 shadow-lg ring-1 ring-black/20 backdrop-blur-[2px]">
             <h1 className="text-2xl text-center font-bold">Welcome</h1>
@@ -187,6 +187,7 @@ function Register() {
           ) : (
             ""
           )}
+          {/* username */}
           <div>
             {errorFields.username.isError ? (
               <p className="bg-red-500 rounded px-1 inline-block text-sm my-1 z-10">
@@ -221,6 +222,7 @@ function Register() {
               />
             </div>
           </div>
+          {/* gmail */}
           <div>
             {errorFields.gmail.isError ? (
               <p className="bg-red-500 rounded px-1 inline-block text-sm my-1 z-10">
@@ -255,6 +257,7 @@ function Register() {
               />
             </div>
           </div>
+          {/* phone */}
           <div>
             {errorFields.phone.isError ? (
               <p className="bg-red-500 rounded px-1 inline-block text-sm my-1 z-10">
@@ -289,6 +292,7 @@ function Register() {
               />
             </div>
           </div>
+          {/* password */}
           <div>
             {errorFields.password.isError ? (
               <p className="bg-red-500 rounded px-1 inline-block text-sm my-1 z-10">
@@ -323,6 +327,7 @@ function Register() {
               />
             </div>
           </div>
+          {/* confirmPassword */}
           <div>
             {errorFields.confirmPassword.isError ? (
               <p className="bg-red-500 rounded px-1 inline-block text-sm my-1 z-10">
@@ -358,11 +363,11 @@ function Register() {
               />
             </div>
           </div>
-          <div>
+          {/* button */}
+          <div className="my-2">
             {loading ? (
               <button
-                className="w-full flex justify-center items-center rounded p-2 border border-zinc-500"
-                onClick={() => RegitserHandler()}>
+                className="w-full flex justify-center items-center rounded p-2 border border-zinc-500">
                 <svg
                   className={`${loading ? "animate-spin" : ""}`}
                   height={25}
@@ -381,6 +386,20 @@ function Register() {
                 Register
               </button>
             )}
+          </div>
+          {/* OR */}
+          <div className="my-4">
+            <hr className=" relative z-10"/>
+            <p className=" relative bg-zinc-900 px-4 mx-auto table -top-3 z-20">OR</p>
+          </div>
+          {/* login */}
+          <div className="text-center">
+            <p>
+              Already have an account{" "}
+              <Link className="text-blue-700 underline" to={"/auth/login"}>
+                Login
+              </Link>
+            </p>
           </div>
         </section>
       </div>
