@@ -4,6 +4,7 @@ import { connectDB } from "./DB/index.js";
 import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import userRouter from "./routes/user.router.js";
 
 const app = express();
 
@@ -32,6 +33,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRouter);
+app.use("/in", userRouter);
+
 
 app.listen(process.env.PORT || 8000, () => {
   console.log(`App is running on ${process.env.PORT} port`);
