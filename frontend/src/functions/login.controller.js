@@ -16,7 +16,7 @@ export const loginController = async (body) => {
       return body;
     })
     .catch((errorResponse) => {
-      console.log("Fetch to faild /auth/login : ", errorResponse);
+      // console.log("Fetch to faild /auth/login : ", errorResponse);
       return undefined;
     });
 

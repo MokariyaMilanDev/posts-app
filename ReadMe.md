@@ -7,12 +7,13 @@
 <br>
 
 ## Technologies Used
-#### **Frontend :** HTML, CSS(Tailwind css), Javascript(React)
+#### **Frontend :** HTML, CSS(Tailwind css), Javascript(React), Redux
 #### **Backend :** Node.js, Express, mongoose
 #### **Database :** MongoDB
-#### **Other :** JWT, bcrypt, cors, dotenv, nodemon
+#### **Other :** JWT, bcrypt, cors, dotenv, nodemon, react-router-dom
 <br>
 
 ## Features
 #### **User Authentication :** Register, Login
+#### **Post :** create
 #### Other features are creating...

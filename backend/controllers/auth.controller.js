@@ -91,7 +91,7 @@ export const loginUserController = async (req, res) => {
 
   res
     .cookie("accessToken", accessToken, {
-      expires: new Date(Date.now() + 60 * 60 * 24 * 3),
+      expires: new Date(Date.now() + 86400),
       httpOnly: true,
       secure: false,
     })

@@ -6,7 +6,7 @@ export const registerController = async (body) => {
     Credentials: "omit",
     headers: {
       "Content-Type": "application/json",
-      Accept: "application/json",
+      "Accept": "application/json",
     },
     body: JSON.stringify(body),
   })
@@ -17,7 +17,7 @@ export const registerController = async (body) => {
       return body;
     })
     .catch((errorResponse) => {
-      console.log("Fetch to faild /auth/register : ", errorResponse);
+      // console.log("Fetch to faild /auth/register : ", errorResponse);
       return errorResponse.json();
     });
 

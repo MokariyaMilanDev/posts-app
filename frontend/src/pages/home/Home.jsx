@@ -19,7 +19,4 @@ function Home() {
   );
 }
 
-// Header
-/// Logo && Lgin || Register
-
 export default Home

@@ -18,7 +18,7 @@ export const userController = async (username)=>{
       return body;
     })
     .catch((errorResponse) => {
-      console.log("Fetch to faild /in/:username : ", errorResponse);
+      // console.log("Fetch to faild /in/:username : ", errorResponse);
       return undefined;
     });
 
