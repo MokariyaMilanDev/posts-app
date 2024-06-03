@@ -1,6 +1,6 @@
 import { ApiResponse } from "../utils/CLASSES.js";
 import { userModel } from "../models/user.model.js";
-import { postModel } from "../models/post.model.js";
+import { postModel } from "../models/post.model.js"
 import jwt from "jsonwebtoken";
 
 export const userController = async (req, res) => {
@@ -8,20 +8,47 @@ export const userController = async (req, res) => {
 
   const { username } = req.params;
   const accessToken = req.cookies.accessToken;
-  if (!accessToken)
-    return res.json(new ApiResponse(false, "Access token is not found"));
 
   const { _id } = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
-  const isExistUser = await userModel.findOne({
+  const user = await userModel.findOne({
     $and: [{ _id }, { username }],
   });
-  if (!isExistUser) return res.json(new ApiResponse(false, "Unvalid user"));
 
-  return res.json(new ApiResponse(true, null, "User", { username }));
+  return res.json(new ApiResponse(true, null, "User", { user }));
 };
 
 export const userPostsController = async (req, res) => {
   console.log("||| /in/:username/posts |||");
+
+  const username = req.params.username;
+
+  const posts = await userModel.aggregate([
+    {
+      $match: {
+        username,
+      },
+    },
+    {
+      $lookup: {
+        from: "posts",
+        localField: "_id",
+        foreignField: "auther",
+        as: "posts",
+      },
+    },
+    {
+      $project: {
+        posts: "$posts",
+      },
+    },
+  ]);
+  if (!posts) {
+    return res.json(new ApiResponse(false, 0, "Server error"));
+  }
+
+  return res.json(
+    new ApiResponse(true, null, "Posts fetch successfully", { posts: posts })
+  );
 };
 
 export const userCreatePostController = async (req, res) => {
@@ -52,7 +79,5 @@ export const userCreatePostController = async (req, res) => {
   });
   if (!createdPost) return res.json(new ApiResponse(false, 0, "Server error"));
 
-  return res.json(
-    new ApiResponse(true, null, "post created successfully")
-  );
+  return res.json(new ApiResponse(true, null, "post created successfully"));
 };

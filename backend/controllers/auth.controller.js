@@ -1,5 +1,6 @@
 import { userModel } from "../models/user.model.js";
 import { ApiResponse } from "../utils/CLASSES.js";
+import jwt from "jsonwebtoken";
 
 export const registerUserController = async (req, res) => {
   console.log("||| /auth/register |||");

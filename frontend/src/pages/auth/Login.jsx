@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { loginController } from "../../functions/login.controller";
+import { fetchUserLogin } from "../../api/auth/fetchUserLogin";
 
 function Login() {
   const navigate = useNavigate();
@@ -49,7 +49,7 @@ function Login() {
     }
 
     //// fetch "/auth/login" ////
-    const loginResponse = await loginController(formData);
+    const loginResponse = await fetchUserLogin(formData);
     if (!loginResponse?.success) {
       if (loginResponse?.errorCode === 0) {
         setErrorFields({
@@ -105,11 +105,7 @@ function Login() {
           <div>
             <h1 className="text-3xl my-4 text-center font-bold">Login</h1>
           </div>
-          {error ? (
-            <p className="text-red-600">Server error, try again</p>
-          ) : (
-            ""
-          )}
+          {error ? <p className="text-red-600">Server error, try again</p> : ""}
           {/* Gmail */}
           <div>
             {errorFields.gmail.isError ? (
@@ -183,8 +179,7 @@ function Login() {
           {/* button */}
           <div className="my-2">
             {loading ? (
-              <button
-                className="w-full flex justify-center items-center rounded p-2 border border-zinc-500">
+              <button className="w-full flex justify-center items-center rounded p-2 border border-zinc-500">
                 <svg
                   className={`${loading ? "animate-spin" : ""}`}
                   height={25}

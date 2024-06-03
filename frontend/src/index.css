@@ -14,3 +14,8 @@
   background-size: cover;
   background-position: center;
 }
+
+.--grid-templete-columns{
+  display: grid;
+  grid-template-columns: repeat(minmax(200px, auto));
+}

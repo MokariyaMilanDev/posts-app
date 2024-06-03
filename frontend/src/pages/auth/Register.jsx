@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { registerController } from "../../functions/register.controller";
 import { Link, useNavigate } from "react-router-dom";
+import { fetchUserRegister } from "../../api/auth/fetchUserRegister";
 
 function Register() {
   const navigate = useNavigate();
@@ -105,7 +105,7 @@ function Register() {
     }
 
     //// fetch "/auth/register" ////
-    const registerResponse = await registerController(formData);
+    const registerResponse = await fetchUserRegister(formData);
     if (!registerResponse.success) {
       if (registerResponse.errorCode === 0) {
         setErrorFields({

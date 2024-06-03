@@ -3,7 +3,7 @@
 function Loading() {
   return (
     <div className="h-screen w-screen flex justify-center items-center">
-      <div>Loading...</div>
+      <h1 className="font-bold text-xl">Loading...</h1>
     </div>
   );
 }

@@ -23,19 +23,14 @@ connectDB(process.env.DATABASE_NAME)
   });
 
 app.get("/", (req, res) => {
-  res
-    .cookie("accessToken", "__Toekn", {
-      expires: new Date(Date.now() + 15000),
-      httpOnly: true,
-      secure: false,
-    })
-    .send("Home page");
+  res.send("Home Route")
 });
 
 app.use("/auth", authRouter);
 app.use("/in", userRouter);
 
 
+
 app.listen(process.env.PORT || 8000, () => {
-  console.log(`App is running on ${process.env.PORT} port`);
+  console.log(`App is running on ${process.env.PORT || 8000} port`);
 });

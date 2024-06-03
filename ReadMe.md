@@ -15,5 +15,5 @@
 
 ## Features
 #### **User Authentication :** Register, Login
-#### **Post :** create
+#### **Post :** create, read
 #### Other features are creating...

@@ -9,8 +9,6 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     INIT_USER: (state, { payload }) => {
-      console.log("||| Redux : INIT_USER |||");
-      console.log("payload : ", payload);
       state.username = payload.username
       // state = {...payload}
     },
