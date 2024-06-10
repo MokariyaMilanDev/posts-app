@@ -1,12 +1,12 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { fetchUserLogin } from "../../api/auth/fetchUserLogin";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useSubmit, useActionData } from "react-router-dom";
 
 function Login() {
   const navigate = useNavigate();
+  const submit = useSubmit();
+  const actionData = useActionData();
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
   const [formData, setFormData] = useState({
     gmail: "",
     password: "",
@@ -25,6 +25,44 @@ function Login() {
       message: "",
     },
   });
+
+  useEffect(()=>{
+    if (actionData) {
+      if (actionData.success) {
+        setLoading(false);
+        navigate(`/in/${actionData.data.username}`);
+      }
+
+      if (actionData.errorCode === 0) {
+        setErrorFields({
+          ...errorFields,
+          universal: { isError: true, message: actionData.message },
+        });
+        setLoading(false);
+        return () => {};
+      }
+
+      if (actionData.errorCode === 1) {
+        setErrorFields({
+          ...errorFields,
+          username: { isError: true, message: actionData.message },
+        });
+        setLoading(false);
+        return () => {};
+      }
+
+      if (actionData.errorCode === 2) {
+        setErrorFields({
+          ...errorFields,
+          gmail: { isError: true, message: actionData.message },
+        });
+        setLoading(false);
+        return () => {};
+      }
+
+      setLoading(false);
+    }
+  }, [actionData])
 
   async function LoginHandler() {
     setLoading(true);
@@ -48,47 +86,7 @@ function Login() {
       return;
     }
 
-    //// fetch "/auth/login" ////
-    const loginResponse = await fetchUserLogin(formData);
-    if (!loginResponse?.success) {
-      if (loginResponse?.errorCode === 0) {
-        setErrorFields({
-          ...errorFields,
-          universal: {
-            isError: true,
-            message: loginResponse.message,
-          },
-        });
-      }
-
-      if (loginResponse?.errorCode === 1) {
-        setErrorFields({
-          ...errorFields,
-          gmail: {
-            isError: true,
-            message: loginResponse.message,
-          },
-        });
-      }
-
-      if (loginResponse?.errorCode === 2) {
-        setErrorFields({
-          ...errorFields,
-          password: {
-            isError: true,
-            message: loginResponse.message,
-          },
-        });
-      }
-
-      setLoading(false);
-      setError(true);
-      return;
-    }
-
-    setError(false);
-    setLoading(false);
-    navigate(`/in/${loginResponse.data.username}`);
+    submit(formData, { method: "post" })
   }
 
   return (
@@ -105,7 +103,6 @@ function Login() {
           <div>
             <h1 className="text-3xl my-4 text-center font-bold">Login</h1>
           </div>
-          {error ? <p className="text-red-600">Server error, try again</p> : ""}
           {/* Gmail */}
           <div>
             {errorFields.gmail.isError ? (
@@ -220,5 +217,24 @@ function Login() {
     </div>
   );
 }
+
+Login.action = async ({ request, params }) => {
+  console.log("Action : ", request);
+  const formData = await request.formData();
+  const body = Object.fromEntries(formData);
+
+  const res = await fetch(`http://localhost:8000/auth/login`, {
+    method: "post",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(body),
+  })
+    .then((response) => response.json())
+    .then((body) => body);
+
+  return res;
+};
 
 export default Login;

@@ -9,7 +9,7 @@ import { Authentication } from "../middlewares/Authentication.js";
 const userRouter = Router();
 
 userRouter.route("/:username").post(Authentication, userController);
-userRouter.route("/:username/posts").post(Authentication, userPostsController);
-userRouter.route("/:username/post/create").post(Authentication, userCreatePostController);
+userRouter.route("/:username/posts").post(userPostsController);
+userRouter.route("/:username/post/create").post(userCreatePostController);
 
 export default userRouter;

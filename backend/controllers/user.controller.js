@@ -1,6 +1,6 @@
 import { ApiResponse } from "../utils/CLASSES.js";
 import { userModel } from "../models/user.model.js";
-import { postModel } from "../models/post.model.js"
+import { postModel } from "../models/post.model.js";
 import jwt from "jsonwebtoken";
 
 export const userController = async (req, res) => {
@@ -12,7 +12,7 @@ export const userController = async (req, res) => {
   const { _id } = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
   const user = await userModel.findOne({
     $and: [{ _id }, { username }],
-  });
+  }).select("-password -createdAt -updatedAt -isLoggedIn -__v -_id")
 
   return res.json(new ApiResponse(true, null, "User", { user }));
 };
@@ -22,7 +22,7 @@ export const userPostsController = async (req, res) => {
 
   const username = req.params.username;
 
-  const posts = await userModel.aggregate([
+  const postsObject = await userModel.aggregate([
     {
       $match: {
         username,
@@ -34,6 +34,23 @@ export const userPostsController = async (req, res) => {
         localField: "_id",
         foreignField: "auther",
         as: "posts",
+        pipeline: [
+          {
+            $lookup: {
+              from: "users",
+              foreignField: "_id",
+              localField: "auther",
+              as: "auther",
+            },
+          },
+          {
+            $addFields: {
+              auther: {
+                $first: "$auther.username",
+              },
+            },
+          },
+        ],
       },
     },
     {
@@ -42,12 +59,15 @@ export const userPostsController = async (req, res) => {
       },
     },
   ]);
+
+  const posts = postsObject[0].posts;
+
   if (!posts) {
     return res.json(new ApiResponse(false, 0, "Server error"));
   }
 
   return res.json(
-    new ApiResponse(true, null, "Posts fetch successfully", { posts: posts })
+    new ApiResponse(true, null, "Posts fetch successfully", { posts })
   );
 };
 

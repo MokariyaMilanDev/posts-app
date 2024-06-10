@@ -14,29 +14,24 @@ export const registerUserController = async (req, res) => {
     !password?.trim() ||
     !confirmPassword?.trim()
   ) {
-    console.log("All fields are required");
     return res.json(new ApiResponse(false, 0, "All fields are required"));
   }
 
   if (username.length <= 2 || username.length >= 12) {
-    console.log("Username must be between 2-12 letters");
     return res.json(
       new ApiResponse(false, 1, "Username must be between 2-12 letters")
     );
   }
 
   if (!gmail.includes("@") || !gmail.includes(".")) {
-    console.log("Unvalid gmail");
     return res.json(new ApiResponse(false, 2, "Unvalid gmail"));
   }
 
   if (phone.toString().length < 10 || phone.toString().length >= 11) {
-    console.log("Unvalid phone number");
     return res.json(new ApiResponse(false, 3, "Unvalid phone number"));
   }
 
   if (password !== confirmPassword) {
-    console.log("Both passwords are must be same");
     return res.json(
       new ApiResponse(false, 4, "Both passwords are must be same")
     );
@@ -92,7 +87,12 @@ export const loginUserController = async (req, res) => {
 
   res
     .cookie("accessToken", accessToken, {
-      expires: new Date(Date.now() + 86400),
+      expires: new Date(Date.now() + 86400000),
+      httpOnly: true,
+      secure: false,
+    })
+    .cookie("username", username, {
+      expires: new Date(Date.now() + 86400000),
       httpOnly: true,
       secure: false,
     })

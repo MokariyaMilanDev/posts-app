@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { fetchUserRegister } from "../../api/auth/fetchUserRegister";
+import { useEffect, useState } from "react";
+import { Link, useActionData, useNavigate, useSubmit } from "react-router-dom";
 
 function Register() {
   const navigate = useNavigate();
+  const submit = useSubmit();
+  const actionData = useActionData();
 
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -39,6 +40,62 @@ function Register() {
       message: "",
     },
   });
+
+  useEffect(() => {
+    if (actionData) {
+      if (actionData.success) {
+        setLoading(false);
+        navigate("/auth/login");
+      }
+
+      if (actionData.errorCode === 0) {
+        setErrorFields({
+          ...errorFields,
+          universal: { isError: true, message: actionData.message },
+        });
+        setLoading(false);
+        return () => {};
+      }
+
+      if (actionData.errorCode === 1) {
+        setErrorFields({
+          ...errorFields,
+          username: { isError: true, message: actionData.message },
+        });
+        setLoading(false);
+        return () => {};
+      }
+
+      if (actionData.errorCode === 2) {
+        setErrorFields({
+          ...errorFields,
+          gmail: { isError: true, message: actionData.message },
+        });
+        setLoading(false);
+        return () => {};
+      }
+
+      if (actionData.errorCode === 3) {
+        setErrorFields({
+          ...errorFields,
+          phone: { isError: true, message: actionData.message },
+        });
+        setLoading(false);
+        return () => {};
+      }
+
+      if (actionData.errorCode === 4) {
+        setErrorFields({
+          ...errorFields,
+          password: { isError: true, message: actionData.message },
+        });
+        setLoading(false);
+        return () => {};
+      }
+
+      setLoading(false);
+    }
+  }, [actionData]);
 
   async function RegitserHandler() {
     setLoading(true);
@@ -104,65 +161,7 @@ function Register() {
       return;
     }
 
-    //// fetch "/auth/register" ////
-    const registerResponse = await fetchUserRegister(formData);
-    if (!registerResponse.success) {
-      if (registerResponse.errorCode === 0) {
-        setErrorFields({
-          ...errorFields,
-          universal: {
-            isError: true,
-            message: registerResponse.message,
-          },
-        });
-      }
-
-      if (registerResponse.errorCode === 1) {
-        setErrorFields({
-          ...errorFields,
-          username: {
-            isError: true,
-            message: registerResponse.message,
-          },
-        });
-      }
-
-      if (registerResponse.errorCode === 2) {
-        setErrorFields({
-          ...errorFields,
-          gmail: {
-            isError: true,
-            message: registerResponse.message,
-          },
-        });
-      }
-
-      if (registerResponse.errorCode === 3) {
-        setErrorFields({
-          ...errorFields,
-          phone: {
-            isError: true,
-            message: registerResponse.message,
-          },
-        });
-      }
-
-      if (registerResponse.errorCode === 4) {
-        setErrorFields({
-          ...errorFields,
-          password: {
-            isError: true,
-            message: registerResponse.message,
-          },
-        });
-      }
-
-      setLoading(false);
-      return;
-    }
-
-    setLoading(false);
-    navigate("/auth/login");
+    submit(formData, { method: "post" });
   }
 
   return (
@@ -366,8 +365,7 @@ function Register() {
           {/* button */}
           <div className="my-2">
             {loading ? (
-              <button
-                className="w-full flex justify-center items-center rounded p-2 border border-zinc-500">
+              <button className="w-full flex justify-center items-center rounded p-2 border border-zinc-500">
                 <svg
                   className={`${loading ? "animate-spin" : ""}`}
                   height={25}
@@ -389,8 +387,10 @@ function Register() {
           </div>
           {/* OR */}
           <div className="my-4">
-            <hr className=" relative z-10"/>
-            <p className=" relative bg-zinc-900 px-4 mx-auto table -top-3 z-20">OR</p>
+            <hr className=" relative z-10" />
+            <p className=" relative bg-zinc-900 px-4 mx-auto table -top-3 z-20">
+              OR
+            </p>
           </div>
           {/* login */}
           <div className="text-center">
@@ -406,5 +406,25 @@ function Register() {
     </div>
   );
 }
+
+Register.action = async ({ request, params }) => {
+  console.log("Action : ", request);
+  const formData = await request.formData();
+  const body = Object.fromEntries(formData);
+
+  const res = await fetch(`http://localhost:8000/auth/register`, {
+    method: "post",
+    Credentials: "omit",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify(body),
+  })
+    .then((response) => response.json())
+    .then((body) => body);
+
+  return res;
+};
 
 export default Register;

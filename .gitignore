@@ -7,7 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-middlewaares
+package-lock.json
 
 node_modules
 .env
