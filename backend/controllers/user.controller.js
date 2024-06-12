@@ -2,6 +2,7 @@ import { ApiResponse } from "../utils/CLASSES.js";
 import { userModel } from "../models/user.model.js";
 import { postModel } from "../models/post.model.js";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 export const userController = async (req, res) => {
   console.log("||| /in/:username |||");
@@ -10,9 +11,11 @@ export const userController = async (req, res) => {
   const accessToken = req.cookies.accessToken;
 
   const { _id } = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
-  const user = await userModel.findOne({
-    $and: [{ _id }, { username }],
-  }).select("-password -createdAt -updatedAt -isLoggedIn -__v -_id")
+  const user = await userModel
+    .findOne({
+      $and: [{ _id }, { username }],
+    })
+    .select("-password -createdAt -updatedAt -isLoggedIn -__v -_id");
 
   return res.json(new ApiResponse(true, null, "User", { user }));
 };
@@ -69,6 +72,26 @@ export const userPostsController = async (req, res) => {
   return res.json(
     new ApiResponse(true, null, "Posts fetch successfully", { posts })
   );
+};
+
+export const userPostController = async (req, res) => {
+  console.log("||| /in/:username/posts/:_id |||");
+
+  const _id = req.params._id;
+  if (!_id) return res.json(new ApiResponse(false, null, "_id not find"));
+
+  const post = await postModel.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(_id),
+      },
+    },
+  ]);
+  if (!post) return res.json(new ApiResponse(false, null, "Unvalid _id"));
+
+  return res
+    .status(200)
+    .json(new ApiResponse(true, null, "Post fetched successfully", { post: post[0] }));
 };
 
 export const userCreatePostController = async (req, res) => {

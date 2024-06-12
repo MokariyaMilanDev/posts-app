@@ -45,7 +45,7 @@ function Login() {
       if (actionData.errorCode === 1) {
         setErrorFields({
           ...errorFields,
-          username: { isError: true, message: actionData.message },
+          gmail: { isError: true, message: actionData.message },
         });
         setLoading(false);
         return () => {};
@@ -54,7 +54,7 @@ function Login() {
       if (actionData.errorCode === 2) {
         setErrorFields({
           ...errorFields,
-          gmail: { isError: true, message: actionData.message },
+          password: { isError: true, message: actionData.message },
         });
         setLoading(false);
         return () => {};
@@ -218,8 +218,7 @@ function Login() {
   );
 }
 
-Login.action = async ({ request, params }) => {
-  console.log("Action : ", request);
+Login.action = async ({ request }) => {
   const formData = await request.formData();
   const body = Object.fromEntries(formData);
 

@@ -17,5 +17,6 @@
 
 .--grid-templete-columns{
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, auto));
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(200px, auto));
 }

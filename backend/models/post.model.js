@@ -13,6 +13,10 @@ const postSchema = new Schema(
     auther:{
       type: mongoose.Types.ObjectId,
       ref: "users",
+    },
+    like:{
+      type: Number,
+      default: 0,
     }
   },
   { timestamps: true }

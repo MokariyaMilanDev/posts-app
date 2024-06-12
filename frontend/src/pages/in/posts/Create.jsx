@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Link,
   useActionData,
@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 
 function Create() {
-  const {username} = useOutletContext();
+  const { username } = useOutletContext();
   const navigate = useNavigate();
   const actionData = useActionData();
 
@@ -33,6 +33,45 @@ function Create() {
     },
   });
 
+  useEffect(() => {
+    if (actionData) {
+      if (actionData.success) {
+        setTimeout(() => {
+          setLoading(false);
+          navigate(`/in/${username}/posts`);
+        }, 1000);
+        return () => {};
+      }
+
+      if (actionData.errorCode === 0) {
+        setErrorFields({
+          ...errorFields,
+          universal: { isError: true, message: actionData.message },
+        });
+        setLoading(false);
+        return () => {};
+      }
+
+      if (actionData.errorCode === 1) {
+        setErrorFields({
+          ...errorFields,
+          title: { isError: true, message: actionData.message },
+        });
+        setLoading(false);
+        return () => {};
+      }
+
+      if (actionData.errorCode === 2) {
+        setErrorFields({
+          ...errorFields,
+          description: { isError: true, message: actionData.message },
+        });
+        setLoading(false);
+        return () => {};
+      }
+    }
+  }, [actionData]);
+
   const createPostHandler = async () => {
     setLoading(true);
     if (!post.title) {
@@ -54,7 +93,6 @@ function Create() {
     }
 
     submit(post, { method: "POST" });
-    setLoading(false)
   };
 
   return (
@@ -148,7 +186,7 @@ function Create() {
 Create.action = async ({ request, params }) => {
   const formData = await request.formData();
   const post = Object.fromEntries(formData);
-  console.log("Request : ", request);
+
   const res = await fetch(
     `http://localhost:8000/in/${params.username}/post/create`,
     {

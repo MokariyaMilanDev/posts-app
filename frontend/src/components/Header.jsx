@@ -7,7 +7,7 @@ function Header({ username }) {
     <header className="flex items-center justify-between">
       <div>
         <Link to={`/in/${username}`}>
-          <h1 className="text-2xl font-semibold">hiren</h1>
+          <h1 className="text-2xl font-semibold">{username}</h1>
         </Link>
       </div>
       <section className="flex gap-4 justify-center items-center">
